@@ -1,17 +1,21 @@
 package serrors
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"sync"
 )
 
 var (
-	unknownCoder defaultCoder = defaultCoder{1, http.StatusInternalServerError, "An internal server error occurred", "http://github.com/marmotedu/errors/README.md"}
+	unknownCoder Code = Code{1, http.StatusInternalServerError, "An internal server error occurred", "http://github.com/strayca7/pkg/serrors/README.md"}
 )
 
 // Coder defines an interface for an error code detail information.
 type Coder interface {
+	// Code returns the code of the coder
+	Code() int
+
 	// HTTP status that should be used for the associated error code.
 	HTTPStatus() int
 
@@ -20,12 +24,11 @@ type Coder interface {
 
 	// Reference returns the detail documents for user.
 	Reference() string
-
-	// Code returns the code of the coder
-	Code() int
 }
 
-type defaultCoder struct {
+// Code is a basic struct that implements the Coder interface.
+// You can use it to Register(coder Coder) or MustRegister(coder Coder) your own error codes.
+type Code struct {
 	// C refers to the integer code of the ErrCode.
 	C int
 
@@ -39,21 +42,9 @@ type defaultCoder struct {
 	Ref string
 }
 
-// Code returns the integer code of the coder.
-func (coder defaultCoder) Code() int {
-	return coder.C
-
-}
-
-// String implements stringer. String returns the external error message,
-// if any.
-func (coder defaultCoder) String() string {
-	return coder.Ext
-}
-
 // HTTPStatus returns the associated HTTP status code, if any. Otherwise,
 // returns 200.
-func (coder defaultCoder) HTTPStatus() int {
+func (coder Code) HTTPStatus() int {
 	if coder.HTTP == 0 {
 		return 500
 	}
@@ -61,8 +52,19 @@ func (coder defaultCoder) HTTPStatus() int {
 	return coder.HTTP
 }
 
+// Code returns the integer code of the coder.
+func (coder Code) Code() int {
+	return coder.C
+}
+
+// String implements stringer. String returns the external error message,
+// if any.
+func (coder Code) String() string {
+	return coder.Ext
+}
+
 // Reference returns the reference document.
-func (coder defaultCoder) Reference() string {
+func (coder Code) Reference() string {
 	return coder.Ref
 }
 
@@ -87,7 +89,7 @@ func Register(coder Coder) {
 // It will panic when the same Code already exist.
 func MustRegister(coder Coder) {
 	if coder.Code() == 0 {
-		panic("code '0' is reserved by 'github.com/marmotedu/errors' as ErrUnknown error code")
+		panic("code '0' is reserved by 'github.com/strayca7/siam/pkg/serrors' as ErrUnknown error code")
 	}
 
 	codeMux.Lock()
@@ -108,8 +110,9 @@ func ParseCoder(err error) Coder {
 		return nil
 	}
 
-	if v, ok := err.(*withCode); ok {
-		if coder, ok := codes[v.code]; ok {
+	var wc *withCode
+	if errors.As(err, &wc) {
+		if coder, ok := codes[wc.code]; ok {
 			return coder
 		}
 	}
@@ -119,13 +122,14 @@ func ParseCoder(err error) Coder {
 
 // IsCode reports whether any error in err's chain contains the given error code.
 func IsCode(err error, code int) bool {
-	if v, ok := err.(*withCode); ok {
-		if v.code == code {
+	var wc *withCode
+	if errors.As(err, &wc) {
+		if wc.code == code {
 			return true
 		}
 
-		if v.cause != nil {
-			return IsCode(v.cause, code)
+		if wc.cause != nil {
+			return IsCode(wc.cause, code)
 		}
 
 		return false

@@ -316,13 +316,13 @@ func TestFormatGeneric(t *testing.T) {
 			"new-error",
 			"github\\.com/strayca7/siam/pkg/serrors\\.TestFormatGeneric\n" +
 				"\\s+.*github\\.com/strayca7/siam/pkg/serrors/format_test\\.go:315"},
-		}, { Errorf("errorf-error"), []string{
-				"errorf-error",
-				"github\\.com/strayca7/siam/pkg/serrors\\.TestFormatGeneric\n" +
-					"\\s+.*github\\.com/strayca7/siam/pkg/serrors/format_test\\.go:319"},
-		}, { errors.New("errors-new-error"), []string{
-			"errors-new-error"},
-		},
+	}, {Errorf("errorf-error"), []string{
+		"errorf-error",
+		"github\\.com/strayca7/siam/pkg/serrors\\.TestFormatGeneric\n" +
+			"\\s+.*github\\.com/strayca7/siam/pkg/serrors/format_test\\.go:319"},
+	}, {errors.New("errors-new-error"), []string{
+		"errors-new-error"},
+	},
 	}
 
 	wrappers := []wrapper{

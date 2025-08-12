@@ -1,8 +1,6 @@
-
-
 package serrors
-// Retained blank lines
 
+// Retained blank lines
 
 /*
 WARNING - changing the line numbers in this file will break the
@@ -23,10 +21,10 @@ const (
 )
 
 func init() {
-	Register(defaultCoder{ConfigurationNotValid, 500, "ConfigurationNotValid error", ""})
-	Register(defaultCoder{ErrInvalidJSON, 500, "Data is not valid JSON", ""})
-	Register(defaultCoder{ErrEOF, 500, "End of input", ""})
-	Register(defaultCoder{ErrLoadConfigFailed, 500, "Load configuration file failed", ""})
+	Register(Code{ConfigurationNotValid, 500, "ConfigurationNotValid error", ""})
+	Register(Code{ErrInvalidJSON, 500, "Data is not valid JSON", ""})
+	Register(Code{ErrEOF, 500, "End of input", ""})
+	Register(Code{ErrLoadConfigFailed, 500, "Load configuration file failed", ""})
 }
 
 func loadConfig() error {

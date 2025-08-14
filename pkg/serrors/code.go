@@ -20,7 +20,7 @@ type Coder interface {
 	HTTPStatus() int
 
 	// External (user) facing error text.
-	String() string
+	External() string
 
 	// Reference returns the detail documents for user.
 	Reference() string
@@ -59,7 +59,7 @@ func (coder Code) Code() int {
 
 // String implements stringer. String returns the external error message,
 // if any.
-func (coder Code) String() string {
+func (coder Code) External() string {
 	return coder.Ext
 }
 
@@ -76,7 +76,7 @@ var codeMux = &sync.Mutex{}
 // It will overrid the exist code.
 func Register(coder Coder) {
 	if coder.Code() == 0 {
-		panic("code `0` is reserved by `github.com/marmotedu/errors` as unknownCode error code")
+		panic("code `0` is reserved by `github.com/strayca7/siam/pkg/serrors` as unknownCode error code")
 	}
 
 	codeMux.Lock()
@@ -140,4 +140,9 @@ func IsCode(err error, code int) bool {
 
 func init() {
 	codes[unknownCoder.Code()] = unknownCoder
+}
+
+// Codes returns all registered error codes.
+func Codes() map[int]Coder {
+	return codes
 }

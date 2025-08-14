@@ -1,7 +1,8 @@
-// Package github.com/strayca7/siam/internal/util/consts provides utilities for extracting constant values from Go source code.
+// Package consts provides utilities for extracting constant values from Go source code.
 package consts
 
 import (
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
@@ -246,11 +247,14 @@ func evalStringConst(e ast.Expr, _ int) (string, bool) {
 	}
 }
 
-func ExtractComment(filePath string) (map[string]string, error) {
+// ExtractComment extracts comments of constant declarations from a Go source file.
+// It needs a file path and a custom parse function to process the comments.
+// parse function will handle the extracted comments and write the results to the values of output map.
+func ExtractComment(filePath string, parse func(string) string) (map[string]string, error) {
 	fset := token.NewFileSet()
 	file, err := parser.ParseFile(fset, filePath, nil, parser.ParseComments)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse file: %w", err)
 	}
 	cmap := ast.NewCommentMap(fset, file, file.Comments)
 
@@ -269,7 +273,7 @@ func ExtractComment(filePath string) (map[string]string, error) {
 			}
 
 			for _, cg := range cmap[vs] {
-				comment := errComment(cg.Text())
+				comment := parse(cg.Text())
 				for _, name := range vs.Names {
 					out[name.Name] = comment
 				}
@@ -280,16 +284,30 @@ func ExtractComment(filePath string) (map[string]string, error) {
 	return out, nil
 }
 
-// errComment trims the comment to its relevant part.
+// ParseErrExternal trims the comment to its relevant part.
 // e.g.
 //
 //	// ErrUserFound - 404: User not found.
 //	return User not found
-func errComment(com string) string {
+func ParseErrExternal(com string) string {
 	if !strings.HasPrefix(com, "Err") {
 		log.Println("Warn: comment does not start with 'Err', ", com)
 		return ""
 	}
 
 	return strings.Split(strings.Split(com, ".")[0], ": ")[1]
+}
+
+// ParseErrHTTPStatus trims the comment to extract the HTTP status code.
+// e.g.
+//
+//	// ErrUserFound - 404: User not found.
+//	return "404"
+func ParseErrHTTPStatus(com string) string {
+	if !strings.HasPrefix(com, "Err") {
+		log.Println("Warn: comment does not start with 'Err', ", com)
+		return ""
+	}
+
+	return strings.Split(strings.Split(com, ":")[0], " ")[2]
 }

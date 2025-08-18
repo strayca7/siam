@@ -3,7 +3,6 @@ module github.com/strayca7/siam
 go 1.24.5
 
 require (
-	github.com/google/uuid v1.6.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	go.uber.org/zap v1.27.0
 )

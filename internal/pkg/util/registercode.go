@@ -2,20 +2,10 @@ package util
 
 import (
 	"fmt"
-	"path/filepath"
 	"strconv"
 
 	"github.com/strayca7/siam/pkg/serrors"
 	"github.com/strayca7/siam/pkg/util/consts"
-)
-
-var (
-	APIServer = "apiserver"
-
-	baseCodePath string = "./internal/pkg/code"
-	CodePath            = map[string]string{
-		"apiserver": filepath.Join(baseCodePath, "apiserver.go"),
-	}
 )
 
 // RegisterCode registers all error codes for the given service.

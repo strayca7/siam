@@ -84,9 +84,9 @@ func new(opts *options.LoggerOptions) {
 	}
 
 	encCfg := zap.NewProductionEncoderConfig()
-	encCfg.EncodeTime = zapcore.RFC3339TimeEncoder
-
+	
 	if env == "dev" {
+		encCfg.EncodeTime = zapcore.RFC3339TimeEncoder
 		encCfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
 		encCfg.EncodeCaller = zapcore.FullCallerEncoder
 	}

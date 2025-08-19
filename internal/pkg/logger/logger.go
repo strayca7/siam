@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"sync"
@@ -59,9 +60,9 @@ func WithMaxAge(maxAge int) WithOpts {
 	}
 }
 
-// Init initializes the logger with the given options.
+// Init initializes the global logger with the given options.
 // Then you can use logger.L() to get the logger instance.
-func Init(opts *options.LoggerOptions, wo ...WithOpts) {
+func Init(ctx context.Context, opts *options.LoggerOptions, wo ...WithOpts) {
 	o := newOpts()
 	mu.Lock()
 	defer mu.Unlock()
@@ -72,10 +73,33 @@ func Init(opts *options.LoggerOptions, wo ...WithOpts) {
 		w(opts)
 	}
 	makeLogDir()
-	new(opts)
+	log = new(ctx, opts)
 }
 
-func new(opts *options.LoggerOptions) {
+// New returns a new initialized logger with the given options.
+func New(ctx context.Context, opts *options.LoggerOptions, wo ...WithOpts) *zap.Logger {
+	o := newOpts()
+	mu.Lock()
+	defer mu.Unlock()
+	if opts == nil {
+		opts = o
+	}
+	for _, w := range wo {
+		w(opts)
+	}
+	makeLogDir()
+	return new(ctx, opts)
+}
+
+const (
+	TraceIDKey = "trace_id"
+	SvcIDKey   = "svc_id"
+)
+
+func new(ctx context.Context, opts *options.LoggerOptions) *zap.Logger {
+	traceID, _ := ctx.Value(TraceIDKey).(string)
+	svcID, _ := ctx.Value(SvcIDKey).(string)
+
 	var core zapcore.Core
 
 	var level zapcore.Level
@@ -84,7 +108,7 @@ func new(opts *options.LoggerOptions) {
 	}
 
 	encCfg := zap.NewProductionEncoderConfig()
-	
+
 	if env == "dev" {
 		encCfg.EncodeTime = zapcore.RFC3339TimeEncoder
 		encCfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
@@ -102,6 +126,7 @@ func new(opts *options.LoggerOptions) {
 
 	jsonEncoder := zapcore.NewJSONEncoder(encCfg)
 
+	var log *zap.Logger
 	if env == "dev" {
 		core = zapcore.NewTee(zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), level),
 			zapcore.NewCore(jsonEncoder, fileWriter, level))
@@ -111,7 +136,7 @@ func new(opts *options.LoggerOptions) {
 		log = zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1), zap.AddStacktrace(zap.PanicLevel), zap.Fields(zap.String("svc", opts.Name)))
 	}
 
-	log.With(zap.Int("pid", os.Getpid()))
+	return log.With(zap.String("trace_id", traceID), zap.String("svc_id", svcID))
 }
 
 // L returns the logger instance.

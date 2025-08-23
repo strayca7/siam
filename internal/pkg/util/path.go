@@ -8,14 +8,14 @@ var (
 )
 
 // base paths
-var (
-	baseConfigPath = "/config"
-	baseCodePath   = "internal/pkg/code"
+const (
+	BaseConfigPath = "./config"
+	BaseCodePath   = "internal/pkg/code"
 )
 
 // specific paths
 var (
 	CodePath = map[string]string{
-		"apiserver": filepath.Join(baseCodePath, "apiserver.go"),
+		"apiserver": filepath.Join(BaseCodePath, "apiserver.go"),
 	}
 )

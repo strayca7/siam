@@ -1,6 +1,8 @@
 package options
 
-import "log"
+import (
+	"log"
+)
 
 type Logger struct {
 	Name       string `json:"name" mapstructure:"name"`

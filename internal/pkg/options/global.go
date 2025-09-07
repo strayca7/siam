@@ -1,7 +1,6 @@
 package options
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/spf13/viper"
@@ -9,7 +8,7 @@ import (
 )
 
 // Global holds the configuration values for the application.
-// It satisfies all sub config interfaces like LogConfig.
+// Each service must initialize its own configuration.
 type Global struct {
 	Log *Logger `json:"log" mapstructure:"log"`
 }
@@ -27,6 +26,5 @@ func NewGlobal() *Global {
 	if err := viper.Unmarshal(&global); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(global)
 	return &global
 }

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/spf13/viper"
+
 	"github.com/strayca7/siam/internal/pkg/util"
 )
 

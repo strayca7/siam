@@ -1,20 +1,21 @@
 package options
 
 import (
-	"github.com/strayca7/siam/pkg/db"
 	"gorm.io/gorm"
+
+	"github.com/strayca7/siam/pkg/database"
 )
 
 type Postgres struct {
-	Host            string `json:"host" mapstructure:"host"`
-	User            string `json:"user" mapstructure:"user"`
-	Password        string `json:"password" mapstructure:"password"`
-	Datebase        string `json:"database" mapstructure:"database"`
-	Port            int    `json:"port" mapstructure:"port"`
-	SSLMode         string `json:"sslMode" mapstructure:"sslMode"`
-	TimeZone        string `json:"timeZone" mapstructure:"timeZone"`
-	MaxIdleConns    int    `json:"maxIdleConns" mapstructure:"maxIdleConns"`
-	MaxOpenConns    int    `json:"maxOpenConns" mapstructure:"maxOpenConns"`
+	Host            string `json:"host"            mapstructure:"host"`
+	User            string `json:"user"            mapstructure:"user"`
+	Password        string `json:"password"        mapstructure:"password"`
+	Datebase        string `json:"database"        mapstructure:"database"`
+	Port            int    `json:"port"            mapstructure:"port"`
+	SSLMode         string `json:"sslMode"         mapstructure:"sslMode"`
+	TimeZone        string `json:"timeZone"        mapstructure:"timeZone"`
+	MaxIdleConns    int    `json:"maxIdleConns"    mapstructure:"maxIdleConns"`
+	MaxOpenConns    int    `json:"maxOpenConns"    mapstructure:"maxOpenConns"`
 	ConnMaxIdleTime int    `json:"connMaxIdleTime" mapstructure:"connMaxIdleTime"`
 	ConnMaxLifetime int    `json:"connMaxLifetime" mapstructure:"connMaxLifetime"`
 }
@@ -38,7 +39,7 @@ func NewPostgres() *Postgres {
 // NewPostgresCli creates a new gorm db instance with the given options.
 // This logic is waiting to split into options and db package.
 func (o *Postgres) NewPostgresCli() (*gorm.DB, error) {
-	opts := &db.Options{
+	opts := &database.Options{
 		Host:            o.Host,
 		User:            o.User,
 		Password:        o.Password,
@@ -51,5 +52,5 @@ func (o *Postgres) NewPostgresCli() (*gorm.DB, error) {
 		ConnMaxIdleTime: o.ConnMaxIdleTime,
 		ConnMaxLifetime: o.ConnMaxLifetime,
 	}
-	return db.New(opts)
+	return database.New(opts)
 }

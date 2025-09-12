@@ -49,11 +49,17 @@ func ParseTraceParent(v string) (TraceContext, error) {
 	if len(flags) != 2 || !isHex(flags) {
 		return tc, errors.New("invalid trace-flags")
 	}
-	tc = TraceContext{Version: ver, TraceID: strings.ToLower(traceID), SpanID: strings.ToLower(spanID), TraceFlags: strings.ToLower(flags)}
+	tc = TraceContext{
+		Version:    ver,
+		TraceID:    strings.ToLower(traceID),
+		SpanID:     strings.ToLower(spanID),
+		TraceFlags: strings.ToLower(flags),
+	}
 	return tc, nil
 }
 
-// FormatTraceParent builds a traceparent header from TraceContext (ParentSpan ignored per spec — parent represented by previous span-id).
+// FormatTraceParent builds a traceparent header from TraceContext (ParentSpan ignored per spec — parent represented
+// by previous span-id).
 func FormatTraceParent(tc TraceContext) string {
 	ver := tc.Version
 	if ver == "" {

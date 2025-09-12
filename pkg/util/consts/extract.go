@@ -13,7 +13,8 @@ import (
 
 // ExtractInt parses the given Go source file and returns all integer constants (including iota-based ones).
 // It evaluates per-line iota (reset to 0 in each const block), supports omitted RHS (reuse previous),
-// and handles common integer constant expressions: literals, iota, unary +/- and binary + - * / % | & ^ << >>, and parentheses.
+// and handles common integer constant expressions: literals, iota, unary +/- and binary + - * / % | & ^ << >>, and
+// parentheses.
 func ExtractInt(filePath string) (map[string]int, error) {
 	fset := token.NewFileSet()
 	file, err := parser.ParseFile(fset, filePath, nil, parser.AllErrors)

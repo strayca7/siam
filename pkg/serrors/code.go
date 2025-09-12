@@ -8,7 +8,12 @@ import (
 )
 
 var (
-	unknownCoder Code = Code{1, http.StatusInternalServerError, "An internal server error occurred", "http://github.com/strayca7/pkg/serrors/README.md"}
+	unknownCoder Code = Code{
+		1,
+		http.StatusInternalServerError,
+		"An internal server error occurred",
+		"http://github.com/strayca7/pkg/serrors/README.md",
+	}
 )
 
 // Coder defines an interface for an error code detail information.
@@ -70,7 +75,7 @@ func (coder Code) Reference() string {
 
 // codes contains a map of error codes to metadata.
 var codes = map[int]Coder{}
-var codeMux = &sync.Mutex{}
+var mu sync.Mutex
 
 // Register register a user define error code.
 // It will overrid the exist code.
@@ -79,8 +84,8 @@ func Register(coder Coder) {
 		panic("code `0` is reserved by `github.com/strayca7/siam/pkg/serrors` as unknownCode error code")
 	}
 
-	codeMux.Lock()
-	defer codeMux.Unlock()
+	mu.Lock()
+	defer mu.Unlock()
 
 	codes[coder.Code()] = coder
 }
@@ -92,8 +97,8 @@ func MustRegister(coder Coder) {
 		panic("code '0' is reserved by 'github.com/strayca7/siam/pkg/serrors' as ErrUnknown error code")
 	}
 
-	codeMux.Lock()
-	defer codeMux.Unlock()
+	mu.Lock()
+	defer mu.Unlock()
 
 	if _, ok := codes[coder.Code()]; ok {
 		panic(fmt.Sprintf("code: %d already exist", coder.Code()))

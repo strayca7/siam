@@ -5,11 +5,11 @@ import (
 )
 
 type Logger struct {
-	Name       string `json:"name" mapstructure:"name"`
-	Level      string `json:"level" mapstructure:"level"`
-	MaxSize    int    `json:"maxSize" mapstructure:"maxSize"`
+	Name       string `json:"name"       mapstructure:"name"`
+	Level      string `json:"level"      mapstructure:"level"`
+	MaxSize    int    `json:"maxSize"    mapstructure:"maxSize"`
 	MaxBackups int    `json:"maxBackups" mapstructure:"maxBackups"`
-	MaxAge     int    `json:"maxAge" mapstructure:"maxAge"`
+	MaxAge     int    `json:"maxAge"     mapstructure:"maxAge"`
 
 	// If true, enable request traceID and spanID logging
 	EnableTrace bool `json:"enableTrace" mapstructure:"enableTrace"`

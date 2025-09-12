@@ -9,9 +9,10 @@ import (
 	"sync"
 
 	"github.com/natefinch/lumberjack"
-	"github.com/strayca7/siam/internal/pkg/options"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/strayca7/siam/internal/pkg/options"
 )
 
 func newOpts() *options.Logger {
@@ -129,7 +130,8 @@ func newTraceID() string {
 	var b [16]byte
 	for {
 		if _, err := rand.Read(b[:]); err != nil {
-			// fallback: should rarely happen; use zeros replaced with time-based random-ish sequence not imported to keep minimal deps
+			// fallback: should rarely happen; use zeros replaced with time-based random-ish sequence not imported to
+			// keep minimal deps
 			for i := range b {
 				b[i] = byte(i + 1)
 			}
@@ -173,7 +175,10 @@ func new(ctx context.Context, opts *options.Logger) *zap.Logger {
 	spanID, _ := ctx.Value(SpanIDKey).(string)
 	if !validSpanID(spanID) { // create a root span
 		spanID = newSpanID()
-		ctx = ContextWithTraceContext(ctx, TraceContext{Version: traceVersion, TraceID: traceID, SpanID: spanID, TraceFlags: "01"})
+		ctx = ContextWithTraceContext(
+			ctx,
+			TraceContext{Version: traceVersion, TraceID: traceID, SpanID: spanID, TraceFlags: "01"},
+		)
 	}
 	svcID, _ := ctx.Value(SvcIDKey).(string)
 
@@ -207,7 +212,13 @@ func new(ctx context.Context, opts *options.Logger) *zap.Logger {
 	if env == "dev" {
 		core = zapcore.NewTee(zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), level),
 			zapcore.NewCore(jsonEncoder, fileWriter, level))
-		log = zap.New(core, zap.AddCaller(), zap.AddCallerSkip(0), zap.AddStacktrace(zap.DPanicLevel), zap.Fields(zap.String("svc", opts.Name)))
+		log = zap.New(
+			core,
+			zap.AddCaller(),
+			zap.AddCallerSkip(0),
+			zap.AddStacktrace(zap.DPanicLevel),
+			zap.Fields(zap.String("svc", opts.Name)),
+		)
 	} else {
 		core = zapcore.NewCore(jsonEncoder, zapcore.AddSync(os.Stdout), level)
 		log = zap.New(core, zap.AddCaller(), zap.AddCallerSkip(0), zap.AddStacktrace(zap.PanicLevel), zap.Fields(zap.String("svc", opts.Name)))

@@ -7,9 +7,14 @@ var (
 	APIServer = "apiserver"
 )
 
+const (
+	YAML = "yaml"
+	JSON = "json"
+)
+
 // base paths
 const (
-	BaseConfigPath = "./config"
+	BaseConfigPath = "./configs"
 	BaseCodePath   = "internal/pkg/code"
 )
 

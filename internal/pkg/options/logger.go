@@ -1,9 +1,5 @@
 package options
 
-import (
-	"log"
-)
-
 type Logger struct {
 	Name       string `json:"name"       mapstructure:"name"`
 	Level      string `json:"level"      mapstructure:"level"`
@@ -16,11 +12,13 @@ type Logger struct {
 }
 
 // NewLogger creates a new Logger instance with the specified name.
-func NewLogger(name string) *Logger {
-	global := NewGlobal()
-	if global.Log == nil {
-		log.Fatal("global log config is nil")
+func NewLogger() *Logger {
+	return &Logger{
+		Name:        "siam",
+		Level:       "info",
+		MaxSize:     10, // megabytes
+		MaxBackups:  5,
+		MaxAge:      30, // days
+		EnableTrace: false,
 	}
-	global.Log.Name = name
-	return global.Log
 }

@@ -6,11 +6,12 @@ import (
 	"github.com/strayca7/siam/pkg/database"
 )
 
+// Postgres defines the configuration options for the Postgres database.
 type Postgres struct {
 	Host            string `json:"host"            mapstructure:"host"`
 	User            string `json:"user"            mapstructure:"user"`
 	Password        string `json:"password"        mapstructure:"password"`
-	Datebase        string `json:"database"        mapstructure:"database"`
+	Database        string `json:"database"        mapstructure:"database"`
 	Port            int    `json:"port"            mapstructure:"port"`
 	SSLMode         string `json:"sslMode"         mapstructure:"sslMode"`
 	TimeZone        string `json:"timeZone"        mapstructure:"timeZone"`
@@ -26,7 +27,7 @@ func NewPostgres() *Postgres {
 		Port:            5432,
 		User:            "",
 		Password:        "",
-		Datebase:        "",
+		Database:        "",
 		SSLMode:         "disable",
 		TimeZone:        "Asia/Shanghai",
 		MaxIdleConns:    100,
@@ -39,11 +40,11 @@ func NewPostgres() *Postgres {
 // NewPostgresCli creates a new gorm db instance with the given options.
 // This logic is waiting to split into options and db package.
 func (o *Postgres) NewPostgresCli() (*gorm.DB, error) {
-	opts := &database.Options{
+	opts := &database.PostgresOptions{
 		Host:            o.Host,
 		User:            o.User,
 		Password:        o.Password,
-		Datebase:        o.Datebase,
+		Database:        o.Database,
 		Port:            o.Port,
 		SSLMode:         o.SSLMode,
 		TimeZone:        o.TimeZone,

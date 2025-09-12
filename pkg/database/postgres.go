@@ -8,11 +8,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type Options struct {
+// PostgresOptions defines the configuration options for the Postgres database.
+type PostgresOptions struct {
 	Host            string
 	User            string
 	Password        string
-	Datebase        string
+	Database        string
 	Port            int
 	SSLMode         string
 	TimeZone        string
@@ -23,12 +24,12 @@ type Options struct {
 }
 
 // // New create a new gorm db instance with the given options.
-func New(opts *Options) (*gorm.DB, error) {
+func New(opts *PostgresOptions) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
 		opts.Host,
 		opts.User,
 		opts.Password,
-		opts.Datebase,
+		opts.Database,
 		opts.Port,
 		opts.SSLMode,
 		opts.TimeZone,

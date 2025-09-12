@@ -192,7 +192,7 @@ func new(ctx context.Context, opts *options.Logger) *zap.Logger {
 	encCfg := zap.NewProductionEncoderConfig()
 
 	if env == "dev" {
-		encCfg.EncodeTime = zapcore.RFC3339NanoTimeEncoder
+		encCfg.EncodeTime = zapcore.RFC3339TimeEncoder
 		encCfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
 		encCfg.EncodeCaller = zapcore.FullCallerEncoder
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // Load loads the configuration for the apiserver service from a YAML file.
-// It only can be called once during the application initialization.
+// Load only can be called once during the application initialization.
 func Load() (*options.Options, error) {
 	v := viper.New()
 	v.SetConfigName(namev1.APIServer)

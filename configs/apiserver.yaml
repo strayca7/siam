@@ -1,0 +1,11 @@
+postgres:
+  host: localhost
+  user: siam
+  password: siam
+  database: siam
+  port: 5432
+  sslMode: disable
+  timeZone: Asia/Shanghai
+  maxIdleConns: 100
+  maxOpenConns: 1000
+  connMaxIdleTime: 30

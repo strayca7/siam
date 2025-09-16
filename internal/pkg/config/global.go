@@ -7,6 +7,8 @@ import (
 	"github.com/strayca7/siam/internal/pkg/util"
 )
 
+// LoadGlobal uses viper to load global configuration file and returns the Global options.
+// LoadGlobal only can be called once during the application initialization.
 func LoadGlobal() (*options.Global, error) {
 	v := viper.New()
 	v.SetConfigName("global")

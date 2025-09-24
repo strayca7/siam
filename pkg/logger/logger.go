@@ -236,7 +236,7 @@ func new(ctx context.Context, opts *options.Logger) *zap.Logger {
 }
 
 // L returns the logger instance.
-// It must be called after Init.
+// It must be called after Init().
 func L() *zap.Logger {
 	if log == nil {
 		panic("logger not initialized")

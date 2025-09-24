@@ -27,7 +27,7 @@ test:
 
 ## format: Gofmt (reformat) package sources (exclude vendor dir if existed).
 .PHONY: format
-format: tools.verify.golines tools.verify.goimports
+format: tools.verify.golines tools.verify.goimports tidy
 	@echo "===========> Formating codes"
 	@$(FIND) -type f -name '*.go' | $(XARGS) gofmt -s -w
 	@$(FIND) -type f -name '*.go' | $(XARGS) goimports -w -local $(ROOT_PACKAGE)
@@ -41,4 +41,5 @@ tools:
 
 .PHONY: tidy
 tidy:
+	@$(GOIMPORTS) -w .
 	@$(GO) mod tidy

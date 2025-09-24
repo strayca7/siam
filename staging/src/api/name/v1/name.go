@@ -1,6 +1,6 @@
 package v1
 
 const (
-	APIServer = "apiserver"
+	APIServer = "siam-apiserver"
 	SIAMCtl   = "siamctl"
 )

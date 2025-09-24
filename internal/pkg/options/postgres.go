@@ -24,10 +24,11 @@ type Postgres struct {
 // NewPostgres creates a `zero` value instance.
 func NewPostgres() *Postgres {
 	return &Postgres{
-		Port:            5432,
+		Host:            "localhost",
 		User:            "",
 		Password:        "",
 		Database:        "",
+		Port:            5432,
 		SSLMode:         "disable",
 		TimeZone:        "Asia/Shanghai",
 		MaxIdleConns:    100,

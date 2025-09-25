@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sync"
@@ -184,9 +185,11 @@ func new(ctx context.Context, opts *options.Logger) *zap.Logger {
 
 	var core zapcore.Core
 
+	// if opts.Level is invalid, panic
 	var level zapcore.Level
 	if err := level.UnmarshalText([]byte(opts.Level)); err != nil {
-		level = zap.InfoLevel
+		fmt.Fprintf(os.Stderr, "Invalid log level %q: %v\n", opts.Level, err)
+		panic(err)
 	}
 
 	encCfg := zap.NewProductionEncoderConfig()
@@ -232,6 +235,9 @@ func new(ctx context.Context, opts *options.Logger) *zap.Logger {
 		)
 	}
 
+	if svcID == "" {
+		return log
+	}
 	return log.With(zap.String("svc_id", svcID))
 }
 

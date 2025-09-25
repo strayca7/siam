@@ -2,6 +2,7 @@ package flag
 
 import (
 	goflag "flag"
+	"fmt"
 	"strings"
 	"sync"
 
@@ -50,9 +51,9 @@ func InitFlags(flags *pflag.FlagSet) {
 	flags.AddGoFlagSet(goflag.CommandLine)
 }
 
-// PrintFlags logs the flags in the flagset.
+// PrintFlags logs all flags in the flagset in INFO level.
 func PrintFlags(flags *pflag.FlagSet) {
 	flags.VisitAll(func(flag *pflag.Flag) {
-		logger.L().Debug("FLAG", zap.String("--"+flag.Name, flag.Value.String()))
+		logger.L().Info("FLAG", zap.String("FLAG", fmt.Sprintf("--%s=%q", flag.Name, flag.Value)))
 	})
 }

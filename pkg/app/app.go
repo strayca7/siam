@@ -16,6 +16,7 @@ import (
 	"github.com/strayca7/siam/pkg/logger"
 	"github.com/strayca7/siam/pkg/serrors"
 	cliflag "github.com/strayca7/siam/staging/src/component-base/cli/flag"
+	globalflag "github.com/strayca7/siam/staging/src/component-base/cli/flag/globalflag"
 	// cliflag "k8s.io/component-base/cli/flag"
 )
 
@@ -125,11 +126,13 @@ func NewApp(name string, basename string, opts ...Option) *App {
 // buildCommand builds the cobra.Command instance and assigns it to cmd based on the App structure.
 func (a *App) buildCommand() {
 	cmd := &cobra.Command{
-		Use:           FormatBasename(a.basename),
-		Short:         a.name,
-		Long:          a.description,
-		SilenceErrors: true,
+		Use:   FormatBasename(a.basename),
+		Short: a.name,
+		Long:  a.description,
+
+		// stop print usage when use a error command
 		SilenceUsage:  true,
+		SilenceErrors: true,
 		Args:          a.args,
 	}
 	cmd.SetOut(os.Stdout)
@@ -166,7 +169,7 @@ func (a *App) buildCommand() {
 
 	// now this AddFlagSet function here only adds a "help" flag to the command,
 	// you can see this function's implementation in Kubernetes, k8s.io/component-base/cli/globalflag/globalflags.go
-	cliflag.AddGlobalFlags(cmd.Name(), namedFlagSets.FlagSet("global"))
+	globalflag.AddGlobalFlags(namedFlagSets.FlagSet("global"), cmd.Name())
 
 	cmd.Flags().AddFlagSet(namedFlagSets.FlagSet("global"))
 
@@ -183,6 +186,7 @@ func (a *App) runCommand(cmd *cobra.Command, args []string) error {
 	if !a.noVersion {
 		// display application version information
 		// TODO: use a custom version method
+		// cliflag.PrintVersionAndExit()
 		logger.L().Info(fmt.Sprintf("%s version: %s", a.name, cmd.Version))
 	}
 	if !a.noConfig {

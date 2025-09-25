@@ -40,6 +40,6 @@ tools:
 	@$(MAKE) tools.install
 
 .PHONY: tidy
-tidy:
+tidy: tools.verify.goimports
 	@$(GOIMPORTS) -w .
 	@$(GO) mod tidy
